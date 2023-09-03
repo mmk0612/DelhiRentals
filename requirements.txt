@@ -1,6 +1,6 @@
 pandas
 numpy
-scikit-learn==1.2.2  # Use the latest version
+scikit-learn==1.0.2  # Use the latest version
 seaborn
 flask
 gunicorn==20.1.0
