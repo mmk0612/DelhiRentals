@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+  <head>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
+      integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD"
+      crossorigin="anonymous"
+    ></script>
+
+    <title>Delhi Rent Predictor</title>
+  </head>
+  <body class="bg-dark">
+    <h1></h1>
+    <div class="container">
+        <div class="row">>
+            <div class="card" style="width:100%;height:100%;margin-top:50px;">
+                <div class="card-header" style="text-align: center;">
+                    <h1>Welcome to Delhi House Rent Predictor!</h1>
+                </div>
+                <div class="card-body">
+                    <form method="post" accept-charset="utf-8">
+                        <div class="row">
+                            <div class="col-md-6" style="text-align: center; margin:20px 0">
+                                <label><b>
+                                    Select the desired Location:
+                                </b>
+                                </label>
+                                <select class="selectpicker form-control" id="localityName" name="localityName" required="1">
+                                    {%  for localityName in localityNames %}
+                                        <option value="{{ localityName }}">{{ localityName }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6" style="text-align: center; margin:20px 0">
+                                <label><b>
+                                    Enter the Number of Bedrooms:
+                                </b>
+                                </label>
+                                <input type="text" class="form-control" id="bedrooms" name="bedrooms" placeholder="Enter bedrooms">
+                            </div>
+                        </div>
+                        <div class="row" style="margin-left:35%;">
+                            <div class="col-md-6" style="text-align: center; margin:20px 0">
+                                <label><b>
+                                    Enter the Size(in square ft.):
+                                </b>
+                                </label>
+                                <input type="text" class="form-control" id="size" name="size" placeholder="Enter square ft.">
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-control">
+                            <button class="btn btn-lg btn-primary form-control"onclick="send_data()">Predict my Rent!</button>
+                        </div>
+                    </form>
+                    <br>
+                    <div class="col-md-12" style="text-align: center;">
+                        <h3><span id="prediction"></span></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function form_handler(event){
+            event.preventDefault();
+        }
+        function send_data(){
+            document.querySelector('form').addEventListener("submit",form_handler);
+            var fd=new FormData(document.querySelector('form'));
+            var request=new XMLHttpRequest();
+            request.open("POST","/predict",true);
+            request.onreadystatechange=function(){
+                if(request.readyState==XMLHttpRequest.DONE){
+                    document.getElementById("prediction").innerHTML="prediction(Rent per Month) = ₹ " + request.responseText;
+                }
+            };
+            document.getElementById("prediction").innerHTML="Wait predicting your rent...";
+            request.onLoad=function(){}
+            request.send(fd);
+        }
+    </script>
+  </body>
+</html>
