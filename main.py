@@ -16,14 +16,25 @@ def index():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    localityName = request.form.get('localityName')
-    bedrooms = request.form.get('bedrooms')
-    size_sq_ft = request.form.get('size')
-    input = pd.DataFrame([[localityName, bedrooms, size_sq_ft]], columns=[
-                         'localityName', 'bedrooms', 'size_sq_ft'])
-    prediction = pipe.predict(input)[0]
-    return str(prediction)
+    try:
+        localityName = request.form.get('localityName')
+        bedrooms = int(request.form.get('bedrooms'))
+        size_sq_ft = float(request.form.get('size'))
+
+        # Validate input values if needed
+        if bedrooms < 0 or size_sq_ft <= 0:
+            return jsonify({'error': 'Invalid input values'}), 400
+
+        input_data = pd.DataFrame({'localityName': [localityName],
+                                   'bedrooms': [bedrooms],
+                                   'size_sq_ft': [size_sq_ft]})
+
+        prediction = pipe.predict(input_data)[0]
+        return jsonify({'prediction': prediction})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  # Handle unexpected errors
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)
